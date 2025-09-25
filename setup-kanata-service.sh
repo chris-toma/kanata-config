@@ -37,11 +37,201 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# Check if kanata is installed
+# Function to detect Linux distribution
+detect_distro() {
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        echo "$ID"
+    elif [[ -f /etc/redhat-release ]]; then
+        echo "rhel"
+    elif [[ -f /etc/debian_version ]]; then
+        echo "debian"
+    else
+        echo "unknown"
+    fi
+}
+
+# Function to install kanata from GitHub releases
+install_kanata_from_github() {
+    print_status "Installing Kanata from GitHub releases..."
+    
+    # Check for required tools and install if missing
+    if ! command -v curl &> /dev/null; then
+        print_status "Installing curl..."
+        apt update && apt install -y curl
+    fi
+    
+    if ! command -v wget &> /dev/null; then
+        print_status "Installing wget..."
+        apt update && apt install -y wget
+    fi
+    
+    # Verify tools are now available
+    if ! command -v curl &> /dev/null || ! command -v wget &> /dev/null; then
+        print_error "Failed to install required tools (curl/wget)"
+        return 1
+    fi
+    
+    # Detect architecture
+    local arch=$(uname -m)
+    case "$arch" in
+        "x86_64")
+            arch="x86_64"
+            ;;
+        "aarch64"|"arm64")
+            arch="aarch64"
+            ;;
+        *)
+            print_error "Unsupported architecture: $arch"
+            return 1
+            ;;
+    esac
+    
+    # Get latest release info
+    local latest_release=$(curl -s https://api.github.com/repos/jtroo/kanata/releases/latest)
+    local download_url=$(echo "$latest_release" | grep "browser_download_url.*linux-${arch}" | cut -d '"' -f 4)
+    
+    if [[ -z "$download_url" ]]; then
+        print_error "Could not find download URL for architecture: $arch"
+        return 1
+    fi
+    
+    print_status "Downloading Kanata from: $download_url"
+    
+    # Download and install
+    local temp_dir=$(mktemp -d)
+    cd "$temp_dir"
+    
+    if ! wget -q "$download_url" -O kanata.tar.gz; then
+        print_error "Failed to download Kanata"
+        cd - > /dev/null
+        rm -rf "$temp_dir"
+        return 1
+    fi
+    
+    if ! tar -xzf kanata.tar.gz; then
+        print_error "Failed to extract Kanata archive"
+        cd - > /dev/null
+        rm -rf "$temp_dir"
+        return 1
+    fi
+    
+    # Find the kanata binary in the extracted files
+    local kanata_binary=$(find . -name "kanata" -type f -executable | head -1)
+    
+    if [[ -z "$kanata_binary" ]]; then
+        print_error "Could not find kanata binary in archive"
+        cd - > /dev/null
+        rm -rf "$temp_dir"
+        return 1
+    fi
+    
+    # Install to /usr/bin
+    print_status "Installing kanata to /usr/bin/"
+    cp "$kanata_binary" /usr/bin/kanata
+    chmod +x /usr/bin/kanata
+    
+    # Cleanup
+    cd - > /dev/null
+    rm -rf "$temp_dir"
+    
+    print_status "Kanata installed successfully from GitHub!"
+    return 0
+}
+
+# Function to install kanata
+install_kanata() {
+    local distro=$(detect_distro)
+    
+    print_status "Kanata not found. Attempting to install..."
+    
+    case "$distro" in
+        "ubuntu"|"debian")
+            print_status "Detected Ubuntu/Debian. Installing kanata..."
+            
+            # Get Ubuntu version for better compatibility
+            if [[ -f /etc/os-release ]]; then
+                . /etc/os-release
+                if [[ "$ID" == "ubuntu" ]]; then
+                    print_status "Ubuntu version: $VERSION"
+                fi
+            fi
+            
+            # Update package lists
+            print_status "Updating package lists..."
+            apt update
+            
+            # Try to install kanata from official repos first
+            if apt install -y kanata; then
+                print_status "Kanata installed from official repositories"
+            else
+                print_warning "Kanata not available in official repositories"
+                print_status "Adding kanata PPA (Personal Package Archive)..."
+                
+                # Add kanata PPA if available
+                if command -v add-apt-repository &> /dev/null; then
+                    add-apt-repository -y ppa:jtroo/kanata 2>/dev/null || true
+                    apt update
+                else
+                    print_status "Installing software-properties-common for add-apt-repository..."
+                    apt install -y software-properties-common
+                    add-apt-repository -y ppa:jtroo/kanata 2>/dev/null || true
+                    apt update
+                fi
+                
+                if apt install -y kanata; then
+                    print_status "Kanata installed from PPA"
+                else
+                    print_warning "PPA installation failed, trying GitHub releases..."
+                    install_kanata_from_github
+                    return $?
+                fi
+            fi
+            ;;
+        "fedora"|"rhel"|"centos")
+            print_status "Detected Fedora/RHEL/CentOS. Installing kanata..."
+            if command -v dnf &> /dev/null; then
+                dnf install -y kanata
+            elif command -v yum &> /dev/null; then
+                yum install -y kanata
+            else
+                print_error "Neither dnf nor yum found"
+                return 1
+            fi
+            ;;
+        "arch"|"manjaro")
+            print_status "Detected Arch/Manjaro. Installing kanata..."
+            pacman -S --noconfirm kanata
+            ;;
+        "opensuse"|"sles")
+            print_status "Detected openSUSE/SLES. Installing kanata..."
+            zypper install -y kanata
+            ;;
+        *)
+            print_warning "Unsupported distribution: $distro"
+            print_status "Attempting to install from GitHub releases..."
+            install_kanata_from_github
+            return $?
+            ;;
+    esac
+    
+    # Verify installation
+    if command -v kanata &> /dev/null; then
+        print_status "Kanata successfully installed via package manager!"
+        return 0
+    else
+        print_warning "Package manager installation failed, trying GitHub releases..."
+        install_kanata_from_github
+        return $?
+    fi
+}
+
+# Check if kanata is installed, install if not
 if ! command -v kanata &> /dev/null; then
-    print_error "Kanata is not installed or not in PATH"
-    print_error "Please install Kanata first: https://github.com/jtroo/kanata"
-    exit 1
+    if ! install_kanata; then
+        print_error "Failed to install Kanata. Please install manually."
+        exit 1
+    fi
 fi
 
 # Check if the service already exists
