@@ -1,0 +1,66 @@
+;; Config for 12" MacBook with physical f keys. This config allows for brightness etc to still work.
+(defsrc
+  esc   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    \
+  caps            a    s    d    f    g       h    j    k    l    ;       '     ret
+  lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
+  lctl  fn    lmet  lalt spc             ralt rmet
+)
+
+(defvar
+  ;; Note: consider using different time values for your different fingers.
+  ;; For example, your pinkies might be slower to release keys and index
+  ;; fingers faster.
+  tap-time 200
+  hold-time 200
+  hold-time-slow 300
+)
+
+(defalias
+  meh  (multi ctl alt sft)
+  tmeh (tap-hold $tap-time $hold-time spc @meh)
+   l_sys1 (layer-toggle sys1)
+   l_num (layer-toggle num)
+
+   lmet (tap-hold $tap-time $hold-time-slow esc @l_sys1)
+   spc (tap-hold $tap-time $hold-time-slow spc @l_num)
+
+   a (tap-hold $tap-time $hold-time a lsft)
+   s (tap-hold $tap-time $hold-time s lctl)
+   d (tap-hold $tap-time $hold-time d lalt)
+   f (tap-hold $tap-time $hold-time f lmet)
+   j (tap-hold $tap-time $hold-time j rmet)
+   k (tap-hold $tap-time $hold-time k ralt)
+   l (tap-hold $tap-time $hold-time l rctl)
+   ; (tap-hold $tap-time $hold-time ; rsft)
+
+)
+
+
+(deflayer default
+  caps   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    \
+  esc            @a    @s    @d    @f    g       h    @j    @k    @l    @;       '    ret
+  lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
+  lctl  fn      lalt @lmet          @spc            rmet ralt
+)
+
+(deflayer sys1
+  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX
+  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX    XX
+  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    bspc   XX    XX    XX
+  XX        tab    XX    XX    XX    XX      left  down  up    right ret    XX    XX
+  XX   XX     `     XX    XX    XX    XX      XX    XX    XX    XX    XX     XX
+  XX   XX   XX XX XX XX
+)
+
+(deflayer num
+  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX
+  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX    XX
+  XX         f1    f2    f3    f4    f5      f6    f7    f8    f9    f10    XX    XX    XX
+  XX          1     2     3     4     5       6     7     8     9      0    XX    XX
+  XX   XX    `     XX   f11   f12     \       -     =     [     ]    '      XX
+  XX   XX   XX XX XX XX
+)
