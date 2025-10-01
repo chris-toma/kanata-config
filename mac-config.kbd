@@ -1,4 +1,5 @@
 ;; Config for 12" MacBook with physical f keys. This config allows for brightness etc to still work.
+;; https://github.com/jtroo/kanata/issues/1141 media keys
 (defsrc
   esc   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
   IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
@@ -38,8 +39,9 @@
 )
 
 
+;; https://github.com/jtroo/kanata/issues/1141U§U
 (deflayer default
-  caps   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  caps   🔅   🔆    ✗    ✗    ✗    ✗    ◀◀   ▶⏸   ▶▶   🔇   🔉   🔊
   IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
   tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret
   esc            @a    @s    @d    @f    g       h    @j    @k    @l    @;       '    \
@@ -49,10 +51,10 @@
 
 (deflayer sys1
   XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX
-  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX    XX
-  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    bspc   XX    XX    XX
+  XX         XX    ◀◀    ▶⏸    ▶▶    XX      XX    XX    XX    XX    XX     XX    XX    XX
+  XX         XX    XX    XX    XX    XX      XX    🔇    🔉    🔊    bspc   XX    XX    XX
   XX        tab    XX    XX    XX    XX      left  down  up    right ret    XX    XX
-  XX   XX     `     XX    XX    XX    XX      XX    XX    XX    XX    XX     XX
+  XX   XX     `     🔅   🔆    XX    XX      XX    XX    XX    XX    XX     XX
   XX   XX   XX XX XX XX
 )
 
