@@ -17,6 +17,9 @@
   hold-time 200
   hold-time-slow 300
 )
+
+
+;; only on mac kanata -l lists all keyboards
 (defcfg
   macos-dev-names-include (
     "Apple Internal Keyboard / Trackpad"

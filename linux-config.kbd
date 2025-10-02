@@ -5,7 +5,7 @@
   tab            q    w    e    r    t       y    u    i    o    p       [    ]    \
   caps            a    s    d    f    g       h    j    k    l    ;       '     ret
   lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
-  lctl  fn    lmet  lalt spc             ralt rmet
+  lctl  fn    lmet  lalt                spc             ralt rmet
 )
 
 (defvar
@@ -39,21 +39,21 @@
 
 
 (deflayer default
-  caps   f1    f2    f3    f4    f5    f6    f7    f8    f9    f10   f11   f12
+  caps   🔅   🔆    ✗    ✗    ✗    ✗    ◀◀   ▶⏸   ▶▶   🔇   🔉   🔊
   IntlBackslash  1    2    3    4    5       6    7    8    9    0       -    =    bspc
-  tab            q    w    e    r    t       y    u    i    o    p       [    ]    \
-  esc            @a    @s    @d    @f    g       h    @j    @k    @l    @;       '    ret
+  tab            q    w    e    r    t       y    u    i    o    p       [    ]    ret
+  esc            @a    @s    @d    @f    g       h    @j    @k    @l    @;       '    \
   lsft   `       z    x    c    v    b       n    m    ,    .    /       rsft
-  lctl  fn      lalt @lmet          @spc            rmet ralt
+  lctl      fn lalt @lmet          @spc            rmet ralt
 )
 
 (deflayer sys1
   XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX
-  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX    XX
-  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    bspc   XX    XX    XX
+  XX         XX    ◀◀    ▶⏸    ▶▶    XX      XX    XX    XX    XX    XX     XX    XX    XX
+  XX         XX    XX    XX    XX    XX      XX    🔇    🔉    🔊    bspc   XX    XX    XX
   XX        tab    XX    XX    XX    XX      left  down  up    right ret    XX    XX
-  XX   XX     `     XX    XX    XX    XX      XX    XX    XX    XX    XX     XX
-  XX   XX   XX XX XX XX
+  XX   XX     `     🔅   🔆    XX    XX      XX    XX    XX    XX    XX     XX
+  XX   XX   XX XX XX XX XX
 )
 
 (deflayer num
@@ -62,5 +62,6 @@
   XX         f1    f2    f3    f4    f5      f6    f7    f8    f9    f10    XX    XX    XX
   XX          1     2     3     4     5       6     7     8     9      0    XX    XX
   XX   XX    `     XX   f11   f12     \       -     =     [     ]    '      XX
-  XX   XX   XX XX XX XX
+  XX XX   XX   XX XX XX XX
 )
+
