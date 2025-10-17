@@ -17,20 +17,25 @@
   hold-time 200
   hold-time-slow 300
 )
-
-
-;; only on mac kanata -l lists all keyboards
 (defcfg
+  concurrent-tap-hold yes
   macos-dev-names-include (
     "Apple Internal Keyboard / Trackpad"
   )
 )
 
 (defalias
+  back (multi lmet [ )
+  forward (multi lmet ] )
+
+  prev (multi lctrl lsft tab)
+  next (multi lctrl tab)
+
   meh  (multi ctl alt sft)
   tmeh (tap-hold $tap-time $hold-time spc @meh)
    l_sys1 (layer-toggle sys1)
    l_num (layer-toggle num)
+   l_special (layer-toggle special)
 
    lmet (tap-hold $tap-time $hold-time-slow esc @l_sys1)
    spc (tap-hold $tap-time $hold-time-slow spc @l_num)
@@ -46,6 +51,12 @@
 )
 
 
+;;(defchordsv2
+ ;; (spc esc)    @l_special       200 all-released  (num)
+  ;;(a s d) (macro h e l l o) 250 first-release (num)
+  ;;(s d f) (macro b y e)     400 first-release (num)
+;;)
+
 ;; https://github.com/jtroo/kanata/issues/1141U§U
 (deflayer default
   caps   🔅   🔆    ✗    ✗    ✗    ✗    ◀◀   ▶⏸   ▶▶   🔇   🔉   🔊
@@ -59,13 +70,22 @@
 (deflayer sys1
   XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX
   XX         XX    ◀◀    ▶⏸    ▶▶    XX      XX    XX    XX    XX    XX     XX    XX    XX
-  XX         XX    XX    XX    XX    XX      XX    🔇    🔉    🔊    bspc   XX    XX    XX
-  XX        tab    XX    XX    XX    XX      left  down  up    right ret    XX    XX
+  XX      @prev @next @back @forward XX      XX    🔇    🔉    🔊    bspc   XX    XX    XX
+  XX        tab @prev @next @back @forward   left  down  up    right ret    XX    XX
   XX   XX     `     🔅   🔆    XX    XX      XX    XX    XX    XX    XX     XX
   XX   XX   XX XX XX XX XX
 )
 
 (deflayer num
+  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX
+  XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX    XX
+  XX         f1    f2    f3    f4    f5      f6    f7    f8    f9    f10    XX    XX    XX
+  XX          1     2     3     4     5       6     7     8     9      0    XX    XX
+  XX   XX    `     XX   f11   f12     \       -     =     [     ]    '      XX
+  XX XX   XX   XX XX XX XX
+)
+
+(deflayer special
   XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX
   XX         XX    XX    XX    XX    XX      XX    XX    XX    XX    XX     XX    XX    XX
   XX         f1    f2    f3    f4    f5      f6    f7    f8    f9    f10    XX    XX    XX
