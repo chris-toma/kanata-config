@@ -37,8 +37,8 @@
    l_num (layer-toggle num)
    l_special (layer-toggle special)
 
-   lmet (tap-hold $tap-time $hold-time-slow esc @l_sys1)
-   spc (tap-hold $tap-time $hold-time-slow spc @l_num)
+   lmet (tap-hold $tap-time $hold-time esc @l_sys1)
+   spc (tap-hold $tap-time $hold-time spc @l_num)
 
    a (tap-hold $tap-time $hold-time a lsft)
    s (tap-hold $tap-time $hold-time s lctl)
